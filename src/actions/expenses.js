@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import db from '../firebase/firebase'
-import { ref, set, push, onValue, get, onChildRemoved, DataSnapshot } from "firebase/database";
+import { ref, set, push, update, get, onChildRemoved, DataSnapshot } from "firebase/database";
 
 //ADD_EXPENSE
 export const addExpense = (expense) =>({
@@ -52,6 +52,15 @@ export const editExpense = (id, updates) =>({
     id,
     updates
 })
+
+
+export const startEditExpense = (id, updates) =>{
+    return (dispatch) =>{     
+        return update(ref(db, `expenses/${id}`),updates).then(()=>{
+            dispatch(editExpense(id,updates))
+        })
+    }
+}
 
 
 //SET_EXPENSES
