@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from "firebase/database";
+import { GoogleAuthProvider } from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -17,7 +18,8 @@ const firebaseConfig = {
 
  const db = getDatabase(app)
 
- export { db as default , app }
+ const googleAuthProvider = new GoogleAuthProvider();
+ export { db as default , app, googleAuthProvider }
 //  expenses.map((expense)=>{
 //     push(ref(db, 'expenses'),expense)
 //  })

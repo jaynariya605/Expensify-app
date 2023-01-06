@@ -1,15 +1,26 @@
 import React from "react";
 import ExpenseList from './ExpenseList';
 import ExpenseListFilters from "./ExpenseListFilters";
-import ExpensesSummary from "./ExpensesSummary"
+import ExpensesSummary from "./ExpensesSummary";
+import { connect } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-const DashBoard = () => (
+export const DashBoard = (props) => (
     <div>
-        <ExpensesSummary/>
-        <ExpenseListFilters/>
-        <ExpenseList />
+        {props.user.uid ?
+            <div>
+            <ExpensesSummary/>
+            <ExpenseListFilters/>
+            <ExpenseList />
+            </div>
+            : <Navigate to="/"/>}
+
     </div>
 );
 
-export default DashBoard
+const mapStateToProps = (state) =>({
+    user: state.auth
+})
+
+export default connect(mapStateToProps)(DashBoard)
 

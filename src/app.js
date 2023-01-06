@@ -1,15 +1,15 @@
 import React from 'react'; //require(react) ES5 and theese ES-6 
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes, Link, NavLink } from 'react-router-dom';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss'
-import AppRouter from './routers/AppRouter';
+import AppRouter, {history} from './routers/AppRouter';
 import configureStore from './store/configureStore';
 import { startSetExpenses } from './actions/expenses';
-import { setTextFilter } from './actions/filters';
-import getVisibleExpenses from './selectors/expenses';
 import { Provider } from 'react-redux';
 import './firebase/firebase'
+import { getAuth } from 'firebase/auth';
+import { login, logout } from './actions/auth';
+import { redirect } from 'react-router-dom';
 
 
 const root = createRoot(document.getElementById('app'));
@@ -22,7 +22,28 @@ const jsx= (
     </Provider>
 )
 
+let hasRendered = false
+
+ const renderApp = () => {
+    if(!hasRendered){
+        root.render(jsx);
+        hasRendered = true
+    }
+}
+
 root.render(<p>Loading.....</p>);
-store.dispatch(startSetExpenses()).then(()=>{
-    root.render(jsx);
+
+const auth = getAuth()
+auth.onAuthStateChanged((user)=>{
+    if(user){
+        store.dispatch(login(user.uid))
+        store.dispatch(startSetExpenses()).then(()=>{
+            renderApp()
+        })
+        
+    }else{
+        store.dispatch(logout())
+        renderApp()
+    }
 })
+
